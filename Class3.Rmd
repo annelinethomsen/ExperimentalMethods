@@ -188,14 +188,15 @@ Try the following exercises to practice summarise(), group_by(), mean() and pipe
 ```{r}
 summary_balloon_balance_bygender <- df %>%
   group_by(gender) %>%
-summarise(mean(df$balloon_balance))
+summarise(mean(balloon_balance))
+#It seems like there is no difference? The mean for each gender is 33.5
 ```
 
 2. Is there a relation between sound level preference and which cola was chosen?
 
 ```{r}
-sound_coke <- df %>% 
-  group_by(taste_cola) %>% 
+sound_coke <- df %>%
+  group_by(taste_cola) %>%
   summarise(mean(sound_level_pref))
 
 view(sound_coke)
@@ -210,13 +211,17 @@ view(sound_coke)
   3b. What does number of people tell us about the estimates of the mean? Are our results reliable?
 
 ```{r}
-hand_tongue <- df %>% 
-  group_by(handedness) %>% 
-  summarise(mean(tongue_twist),n())
+hand_tongue <- df %>%
+group_by(handedness) %>%
+  summarise(mean(tongue_twist))
 
-hand_tongue
+view(hand_tongue)
+# It seems like people who are righthanded performs better in the tongue twister task
 ```
   
+```{r}
+#Not really sure how to solve exercise 3.a and 3.b?
+```
 
 ## Part 3: Including Plots
 R can draw plots, but they are not that pretty.

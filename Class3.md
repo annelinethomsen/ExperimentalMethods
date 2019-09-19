@@ -34,8 +34,27 @@ In the setup chunk, you can change default settings for all chunks (e.g. see Com
 ```r
 #Command 1: find default chunk options (opts_chunk), and set the setting echo (whether to show your code) to TRUE 
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
 
+```
+## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
+```
 
+```
+## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
+## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
+## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
+## ✔ readr   1.3.1     ✔ forcats 0.4.0
+```
+
+```
+## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+```
+
+```r
 #Command 2: set a new working directory to ALL chunks - not just the current chunk
 #You need to remove the # for it to work
 #knitr::opts_knit$set(root.dir = 'relative_path_to_root_from_Rmd' )
@@ -50,7 +69,31 @@ df <- read_csv("NEW_CogSciPersonalityTest2019 (1).csv")
 ```
 
 ```
-## Error in eval(expr, envir, enclos): could not find function "read_csv"
+## Warning: Missing column names filled in: 'X1' [1]
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   .default = col_character(),
+##   X1 = col_double(),
+##   birth_day = col_date(format = ""),
+##   shoesize = col_double(),
+##   choose_rand_num = col_double(),
+##   ratio2d4d = col_double(),
+##   balloon = col_double(),
+##   balloon_balance = col_double(),
+##   breath_hold = col_double(),
+##   tongue_twist = col_double(),
+##   romberg_open = col_double(),
+##   romberg_closed = col_double(),
+##   hours_music_per_week = col_double(),
+##   sound_level_pref = col_double()
+## )
+```
+
+```
+## See spec(...) for full column specifications.
 ```
 
 It will only work if the file is inside of your working directory
@@ -83,7 +126,7 @@ class(df$balloon_balance)
 ```
 
 ```
-## Error in df$balloon_balance: object of type 'closure' is not subsettable
+## [1] "numeric"
 ```
 
 The class is "numeric"
@@ -116,23 +159,6 @@ We will look at some new functions from the package tidyverse. Make a new chunk 
 library(tidyverse)
 ```
 
-```
-## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
-```
-
-```
-## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
-## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
-## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
-## ✔ readr   1.3.1     ✔ forcats 0.4.0
-```
-
-```
-## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-```
-
 
 ### summarise() function
 This function collapses the whole dataframe into a single summary. For this function to work, it has to follow certain pattern.  First, you specify the data frame you want to summarise and then you say what values you want to have in your summary.
@@ -146,7 +172,10 @@ summarise(df,mean(shoesize))
 ```
 
 ```
-## Error in UseMethod("summarise_"): no applicable method for 'summarise_' applied to an object of class "function"
+## # A tibble: 1 x 1
+##   `mean(shoesize)`
+##              <dbl>
+## 1             40.6
 ```
 
 ```r
@@ -155,7 +184,10 @@ summarise(df,mean(shoesize),sd(shoesize))
 ```
 
 ```
-## Error in UseMethod("summarise_"): no applicable method for 'summarise_' applied to an object of class "function"
+## # A tibble: 1 x 2
+##   `mean(shoesize)` `sd(shoesize)`
+##              <dbl>          <dbl>
+## 1             40.6           2.98
 ```
 
 summarise() is quite useless by itself, but everything changes when we **group** our data!
@@ -167,19 +199,9 @@ group_by() takes an existing data frame and converts it into a data frame groupe
 ```r
 #group data by gender
 grouped_bygender <- group_by(df, gender)
-```
 
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
-```
-
-```r
 #group data by native language
 grouped_bylanguage <- group_by(df, native_Danish)
-```
-
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
 ```
 
 When we apply different functions/operations on grouped data, we get outcomes for every group. 
@@ -192,7 +214,11 @@ summarise(grouped_bygender, mean(breath_hold))
 ```
 
 ```
-## Error in summarise(grouped_bygender, mean(breath_hold)): objekt 'grouped_bygender' blev ikke fundet
+## # A tibble: 2 x 2
+##   gender `mean(breath_hold)`
+##   <chr>                <dbl>
+## 1 female                49.7
+## 2 male                  65.5
 ```
 
 As you can see, by using summarise() on grouped data, we can already get some insight into our data and possible findings ("Guys are on average better at holding breath?!")
@@ -205,7 +231,11 @@ summarise(grouped_bylanguage, mean(tongue_twist), sd(tongue_twist))
 ```
 
 ```
-## Error in summarise(grouped_bylanguage, mean(tongue_twist), sd(tongue_twist)): objekt 'grouped_bylanguage' blev ikke fundet
+## # A tibble: 2 x 3
+##   native_Danish `mean(tongue_twist)` `sd(tongue_twist)`
+##   <chr>                        <dbl>              <dbl>
+## 1 No                            42.6               5.35
+## 2 Yes                           46.6              12.4
 ```
 
 Knowing about mean and standard deviation, what do you think this summary shows?
@@ -216,27 +246,18 @@ Run it and see for yourself:
 
 ```r
 grouped_data <- group_by(df, gender) 
-```
-
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
-```
-
-```r
 summary_shoe_bygender <- summarise(grouped_data, mean(shoesize))
-```
 
-```
-## Error in summarise(grouped_data, mean(shoesize)): objekt 'grouped_data' blev ikke fundet
-```
-
-```r
 #call the variable to see the summary output
 summary_shoe_bygender
 ```
 
 ```
-## Error in eval(expr, envir, enclos): objekt 'summary_shoe_bygender' blev ikke fundet
+## # A tibble: 2 x 2
+##   gender `mean(shoesize)`
+##   <chr>             <dbl>
+## 1 female             38.7
+## 2 male               43.7
 ```
 This seems a bit clumsy to write all of this... There must be a better way!
 
@@ -256,18 +277,16 @@ Let's see how to do pipes in practice. We will try to recreate the same summary 
 summary_shoe_bygender2 <- df %>%  #send the df to the next line:
   group_by(gender) %>% #group the data from the previous line by gender and send the result to the next line: 
   summarise(mean(shoesize)) #summarise mean shoesize for data from the previous line
-```
 
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
-```
-
-```r
 summary_shoe_bygender2
 ```
 
 ```
-## Error in eval(expr, envir, enclos): objekt 'summary_shoe_bygender2' blev ikke fundet
+## # A tibble: 2 x 2
+##   gender `mean(shoesize)`
+##   <chr>             <dbl>
+## 1 female             38.7
+## 2 male               43.7
 ```
 
 As you can see, summary_shoe_bygender and summary_shoe_bygender2 are the same! Both ways work, but pipes make your code more efficient and much easier to read. 
@@ -280,21 +299,9 @@ Try the following exercises to practice summarise(), group_by(), mean() and pipe
 
 
 ```r
-gendered_balancing <- df %>% 
-  group_by(gender) %>% 
-  summarise(mean(balloon_balance))
-```
-
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
-```
-
-```r
-gendered_balancing
-```
-
-```
-## Error in eval(expr, envir, enclos): objekt 'gendered_balancing' blev ikke fundet
+summary_balloon_balance_bygender <- df %>%
+  group_by(gender) %>%
+summarise(mean(df$balloon_balance))
 ```
 
 2. Is there a relation between sound level preference and which cola was chosen?
@@ -304,19 +311,11 @@ gendered_balancing
 sound_coke <- df %>% 
   group_by(taste_cola) %>% 
   summarise(mean(sound_level_pref))
+
+view(sound_coke)
+#Seems like there is a tendency that people who liked the S-cola in general prefer a higer sound level.
 ```
 
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
-```
-
-```r
-sound_coke
-```
-
-```
-## Error in eval(expr, envir, enclos): objekt 'sound_coke' blev ikke fundet
-```
 
 3. Does handedness influence average tongue twisting speed?
 
@@ -329,18 +328,17 @@ sound_coke
 hand_tongue <- df %>% 
   group_by(handedness) %>% 
   summarise(mean(tongue_twist),n())
-```
 
-```
-## Error in UseMethod("group_by_"): no applicable method for 'group_by_' applied to an object of class "function"
-```
-
-```r
 hand_tongue
 ```
 
 ```
-## Error in eval(expr, envir, enclos): objekt 'hand_tongue' blev ikke fundet
+## # A tibble: 3 x 3
+##   handedness   `mean(tongue_twist)` `n()`
+##   <chr>                       <dbl> <int>
+## 1 Ambidextrous                 50       1
+## 2 Left-handed                  50.7     8
+## 3 Right-handed                 45.4    53
 ```
   
 
@@ -378,10 +376,7 @@ First, you need to tell ggplot what dataset to use. This is done using the ggplo
 ggplot(df) # the most basic setup
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
 
 
 Optionally you can add whatever aesthetics you want to apply to your ggplot (inside aes() argument) - such as X and Y axis by specifying the respective variables from the dataset. The variable based on which the color, size, shape and stroke should change can also be specified here itself. The aesthetics specified here will be inherited by all the geom layers you will add later.
@@ -393,28 +388,19 @@ Optionally you can add whatever aesthetics you want to apply to your ggplot (ins
 ggplot(df, aes(x=gender)) # if only X-axis is known. The Y-axis can be specified later
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png)
 
 ```r
 ggplot(df, aes(x=gender, y=balloon)) # if both X and Y axes are fixed for all layers.
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-2.png)
 
 ```r
 ggplot(df, aes(x=breath_hold, color=gender))  # Each category of the 'gender' variable will now have a distinct  color, once a geom is added.
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-3.png)
 
 
 As you can see, this graph does not show any data yet, we need to give ggplot more information!  We can do it by adding 'geoms' (layers) to our base setup.
@@ -434,27 +420,24 @@ There is a lot of different geoms in the ggplot2 package. See the cheatsheet to 
 
 Let's say we just want to see what is going on in the tongue_twist measure. We need to know that it's continuous. From the cheatsheet, we can see that one of our options to check what's going on is to see distribution of values using geom_histogram:
 
+
 ```r
-ggplot(df, aes(x=tongue_twist))+
-  geom_histogram()
+ggplot(df, aes(x=tongue_twist))+geom_histogram()
 ```
 
 ```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)
 
 We can kind of see already, what is going on, but let's make it prettier by changing one of prarameters of geom:
 
 ```r
-ggplot(df, aes(x=tongue_twist))+
-  geom_histogram(binwidth = 1) #you can change binwidth if you want to, it's cosmetic
+ggplot(df, aes(x=tongue_twist))+geom_histogram(binwidth = 1) #you can change binwidth if you want to, it's cosmetic
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
 
 Geom_histrogram just showed counts for different values of tongue twister column - majority reported time around 40 seconds. 
 
@@ -465,14 +448,10 @@ Make a ggplot with geom_histogram to see distribution of choose_rand_num (Make a
 
 
 ```r
-ggplot(df, aes(x=choose_rand_num))+
-  geom_histogram(binwidth = 0.5)
+ggplot(df, aes(x=choose_rand_num))+geom_histogram(binwidth = 0.5)
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
 
 Question: Do you think it's normally distributed? 
 
@@ -487,27 +466,19 @@ Let's try it out by specifying x coordinate to show gender:
 
 
 ```r
-ggplot(df, aes(x=gender))+ 
-  geom_bar() 
+ggplot(df, aes(x=gender)) + geom_bar() 
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
 
 
 If we know y-coordinate too, then we need to help geom_bar() to decide what to do with data instead of counting:
 
 ```r
-ggplot(df, aes(x=gender, y=balloon))+
-  geom_bar(stat='summary', fun.y = mean) #we ask to show us the mean of values on y coordinate
+ggplot(df, aes(x=gender, y=balloon)) + geom_bar(stat='summary', fun.y = mean) #we ask to show us the mean of values on y coordinate
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
 
 As you can see, geoms are pretty flexible! We can change functionality by changing stuff in parantheses - as you saw in geom_bar(stat='summary', fun.y = mean) 
 
@@ -522,10 +493,7 @@ ggplot(df, aes(x=gender, y=balloon))+
   geom_errorbar(stat = 'summary', fun.data = mean_se)
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
 
 
 
@@ -545,10 +513,7 @@ ggplot(df, aes(x=gender, y=balloon, fill = gender))+
   theme_minimal()
 ```
 
-```
-## Error: You're passing a function as global data.
-## Have you misspelled the `data` argument in `ggplot()`
-```
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
 
 #### Visualization exercise
 1. Identically to bar plots we've made above, make a bar plot showing average shoesize according to handedness.
