@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Part 1: R Markdown intro</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h2>Part 1: R Markdown intro</h2>
+
+<p>(you can use ## so something you write looks like a header 2 like this one)</p>
+
+<h3>1. Make a new R Markdown (with default: html as output)</h3>
+
+<p>(you can use ### so it looks like header 3)</p>
+
+<p>Let&#39;s look at the completely new .Rmd file together :) </p>
+
+<h3>2. Let&#39;s see how to work with .Rmd files.</h3>
+
+<p>First, change author name to yours - it&#39;ll be your notes and comments that will make this file way more valuable!</p>
+
+<p>Then we go to the setup chunk.</p>
+
+<h4>A setup chunk {r setup}</h4>
+
+<p>(you can use #### so it looks like header 4&hellip; you get it)</p>
+
+<p>Below you can see a setup chunk. Any chunk can be a setup chunk if you write {r setup} at its beginning. </p>
+
+<p>In this case we also ask R to not include the chunk in the output of this file by writing the setting {&hellip;, include=FALSE}. </p>
+
+<p>In the setup chunk, you can change default settings for all chunks (e.g. see Command 1 and Command 2). </p>
+
+<p>&#39;knitr::&#39; - means that we want to use functions specifically from the package knitr.</p>
+
+<pre><code class="r">#Command 1: find default chunk options (opts_chunk), and set the setting echo (whether to show your code) to TRUE 
+knitr::opts_chunk$set(echo = TRUE)
+
+
+#Command 2: set a new working directory to ALL chunks - not just the current chunk
+#You need to remove the # for it to work
+#knitr::opts_knit$set(root.dir = &#39;relative_path_to_root_from_Rmd&#39; )
+</code></pre>
+
+<h4>Making a new chunk</h4>
+
+<p>You can make a new R code chunk using keyboard shortcut Ctrl + Alt + I (Cmd + Option + I on macOS). Try it! Once the code chunk appears, try importing your data inside of it, using read.csv() function.</p>
+
+<pre><code class="r">df &lt;- read_csv(&quot;NEW_CogSciPersonalityTest2019 (1).csv&quot;)
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): could not find function &quot;read_csv&quot;
+</code></pre>
+
+<p>It will only work if the file is inside of your working directory</p>
+
+<h5>Troubleshooting if you can&#39;t import data:</h5>
+
+<ol>
+<li>Check your working directory getwd()</li>
+<li>Go to this working directory folder on your compurer and check if the file is out there in the open, not in a subfolder</li>
+<li>If the file is not there - put it there!</li>
+<li>Make sure that you wrote the name of the file correctly in R, using quotation marks: e.g. &ldquo;filename.csv&rdquo; </li>
+<li>If it still does not work, check if you have any other folders on your computer with the same name as your working directory (you might be putting your file to an irrelevant folder instead of working directory)</li>
+<li>If it still doesn&#39;t work, ask me or Fabio.</li>
+</ol>
+
+<h4>A new chunk with an output</h4>
+
+<p>Now make a new chunk! In it, find what class of data is stored in the column &#39;balloon_balance&#39;. Use class() function we&#39;ve learned in the first week. How does one refer to a column from a dataframe?</p>
+
+<pre><code class="r">class(&quot;balloon_balance&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;character&quot;
+</code></pre>
+
+<p>The class is &ldquo;character&rdquo;</p>
+
+<pre><code class="r">class(df$balloon_balance)
+</code></pre>
+
+<pre><code>## Error in df$balloon_balance: object of type &#39;closure&#39; is not subsettable
+</code></pre>
+
+<p>The class is &ldquo;numeric&rdquo;</p>
+
+<h4>Knit</h4>
+
+<p>Now press the Knit button! See the result!</p>
+
+<p>When you click the <strong>Knit</strong> button, R will 
+generate an output of your Markdown script. In our case we chose the output to be an HTML document. As you can see, the document shows your text, your chunks of code and outputs of these chunks of code. </p>
+
+<p>This makes it really nice and easy for Fabio to read through your portfolio assignments :) </p>
+
+<h4>Knitting repeatedly</h4>
+
+<p>Now go to the setup chunk and remove the &#39;include = FALSE&#39; part, so only {r setup} stays at the beginning of the chunk. </p>
+
+<p>Press Knit button again!</p>
+
+<p>Every time you press Knit button - your script is saved and your html output is rewritten with new changes. (Means you will not have 1000 html documents from every time you knit - super nice!)</p>
+
+<h2>Part 2: New functions (if we have time)</h2>
+
+<p>We will look at some new functions from the package tidyverse. Make a new chunk and load the tidyverse library - use either pacman::p_load() or library().</p>
+
+<pre><code class="r">library(tidyverse)
+</code></pre>
+
+<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
+</code></pre>
+
+<pre><code>## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
+## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
+## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
+## ✔ readr   1.3.1     ✔ forcats 0.4.0
+</code></pre>
+
+<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+</code></pre>
+
+<h3>summarise() function</h3>
+
+<p>This function collapses the whole dataframe into a single summary. For this function to work, it has to follow certain pattern.  First, you specify the data frame you want to summarise and then you say what values you want to have in your summary.</p>
+
+<p>See examples in the chunk below, try to run it and make sense of results:</p>
+
+<pre><code class="r">#Make a summary with just one value - the average shoesize 
+summarise(df,mean(shoesize))
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;summarise_&quot;): no applicable method for &#39;summarise_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">#summary with several values: the average shoesize and its standard deviation
+summarise(df,mean(shoesize),sd(shoesize))
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;summarise_&quot;): no applicable method for &#39;summarise_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<p>summarise() is quite useless by itself, but everything changes when we <strong>group</strong> our data!</p>
+
+<h3>group_by() function</h3>
+
+<p>group_by() takes an existing data frame and converts it into a data frame grouped by some principle. See examples in the chunk below:</p>
+
+<pre><code class="r">#group data by gender
+grouped_bygender &lt;- group_by(df, gender)
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">#group data by native language
+grouped_bylanguage &lt;- group_by(df, native_Danish)
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<p>When we apply different functions/operations on grouped data, we get outcomes for every group. </p>
+
+<p>For instance:</p>
+
+<pre><code class="r">summarise(grouped_bygender, mean(breath_hold))
+</code></pre>
+
+<pre><code>## Error in summarise(grouped_bygender, mean(breath_hold)): objekt &#39;grouped_bygender&#39; blev ikke fundet
+</code></pre>
+
+<p>As you can see, by using summarise() on grouped data, we can already get some insight into our data and possible findings (&ldquo;Guys are on average better at holding breath?!&rdquo;)</p>
+
+<p>Another example:</p>
+
+<pre><code class="r">summarise(grouped_bylanguage, mean(tongue_twist), sd(tongue_twist))
+</code></pre>
+
+<pre><code>## Error in summarise(grouped_bylanguage, mean(tongue_twist), sd(tongue_twist)): objekt &#39;grouped_bylanguage&#39; blev ikke fundet
+</code></pre>
+
+<p>Knowing about mean and standard deviation, what do you think this summary shows?</p>
+
+<h3>Pipes</h3>
+
+<p>Let&#39;s rehearse how we grouped data and summarised it. In the chunk below I group data by gender and then get a summary, that shows mean shoe size in females and males. 
+Run it and see for yourself:</p>
+
+<pre><code class="r">grouped_data &lt;- group_by(df, gender) 
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">summary_shoe_bygender &lt;- summarise(grouped_data, mean(shoesize))
+</code></pre>
+
+<pre><code>## Error in summarise(grouped_data, mean(shoesize)): objekt &#39;grouped_data&#39; blev ikke fundet
+</code></pre>
+
+<pre><code class="r">#call the variable to see the summary output
+summary_shoe_bygender
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): objekt &#39;summary_shoe_bygender&#39; blev ikke fundet
+</code></pre>
+
+<p>This seems a bit clumsy to write all of this&hellip; There must be a better way!</p>
+
+<p>There is a better way and it&#39;s called pipes!!!</p>
+
+<p>You might ask - what is pipes? It&#39;s a very efficient way to write stuff down in R and it looks like this: %&gt;%</p>
+
+<p>%&gt;% reads ‘send the resulting dataframe(s) to the following function’</p>
+
+<p>You can type pipes faster by using the shortcut:
+cmd+shift+M (MacOS) or ctrl+shift+M (Others)</p>
+
+<p>Let&#39;s see how to do pipes in practice. We will try to recreate the same summary as in the previous code chunk:</p>
+
+<pre><code class="r">summary_shoe_bygender2 &lt;- df %&gt;%  #send the df to the next line:
+  group_by(gender) %&gt;% #group the data from the previous line by gender and send the result to the next line: 
+  summarise(mean(shoesize)) #summarise mean shoesize for data from the previous line
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">summary_shoe_bygender2
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): objekt &#39;summary_shoe_bygender2&#39; blev ikke fundet
+</code></pre>
+
+<p>As you can see, summary_shoe_bygender and summary_shoe_bygender2 are the same! Both ways work, but pipes make your code more efficient and much easier to read. </p>
+
+<h3>Exercises</h3>
+
+<p>Try the following exercises to practice summarise(), group_by(), mean() and pipes. Make a separate code chunk for every question.</p>
+
+<ol>
+<li>Is there a gender difference when it comes to balloon balancing?</li>
+</ol>
+
+<pre><code class="r">gendered_balancing &lt;- df %&gt;% 
+  group_by(gender) %&gt;% 
+  summarise(mean(balloon_balance))
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">gendered_balancing
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): objekt &#39;gendered_balancing&#39; blev ikke fundet
+</code></pre>
+
+<ol>
+<li>Is there a relation between sound level preference and which cola was chosen?</li>
+</ol>
+
+<pre><code class="r">sound_coke &lt;- df %&gt;% 
+  group_by(taste_cola) %&gt;% 
+  summarise(mean(sound_level_pref))
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">sound_coke
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): objekt &#39;sound_coke&#39; blev ikke fundet
+</code></pre>
+
+<ol>
+<li><p>Does handedness influence average tongue twisting speed?</p>
+
+<p>3a. Can you add a column to the summary, which contains number of people in each group (e.g. number of right handed people), hint: look at the n() function</p>
+
+<p>3b. What does number of people tell us about the estimates of the mean? Are our results reliable?</p></li>
+</ol>
+
+<pre><code class="r">hand_tongue &lt;- df %&gt;% 
+  group_by(handedness) %&gt;% 
+  summarise(mean(tongue_twist),n())
+</code></pre>
+
+<pre><code>## Error in UseMethod(&quot;group_by_&quot;): no applicable method for &#39;group_by_&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">hand_tongue
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): objekt &#39;hand_tongue&#39; blev ikke fundet
+</code></pre>
+
+<h2>Part 3: Including Plots</h2>
+
+<p>R can draw plots, but they are not that pretty.</p>
+
+<p>An example that is always included when you start a new Rmd file - plotting some pressure data from package &#39;pressure&#39;:</p>
+
+<pre><code class="r">plot(pressure)
+</code></pre>
+
+<p><img src="data:image/png;base64,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zZo1k6+//tpfmmj1Eenvzf/mBD7RH//Dhg2TRo0ayWWXXSYTJ070l+abb74JqCetq927d5vl0eL1b8BNT+yWEFMEAftShpZ9eVrru+++s+wvJ8v+wFj9+/ePsLazZ9tfStb8+fOtEydOmH8nT540BX7nnXesq6++2jp69KhlXw7Vsr+4rIULFzo2GPuP07J/cFnFixe37C8YfzmjxXHzzTdbjz32mGX/MLCWLl1qlSlTxrIvKep/b6KfHD582LrnnnusUqVKWY0bNw4ojlvr7V//+pdl/yA2fzf6t2P/oLR0nk6R6sPpf2/696GfnX379pk4Xn31VatDhw7m+cGDB81n8tdff/X/jdk/csyySPGahQ74T/+e3nzzTVOSjz76yLITnnkerT6i/b05ICRr0qRJVvfu3S070VtaJ+XLl7dWrlxpivbiiy9at99+u7+e9DtRvxuixeuEmLJSBsnKm5LlPR9++KGlX7C+afv27ZZ9jXPfS1c9lixZ0tIvoW+//dY6duyYv+z6QdcPvG8aN26cdeedd/peOu5xyJAhln653H333QEJPlocF198sXXo0CF/LH/4wx+sRYsW+V8n+sns2bMtu7VrflgFJ3i31tuqVausrVu3+mlHjRpl9evXz7yOVB9O/3uzW3nWZ5995o9p9erVVpEiRczrJUuWWNdee611/Phx8zfmS+66MFK8/g0l+Il+L2iC02nBggUmGerzaPUR7e9N35vo6dSpU1Z6erophv6Yv+SSS6zly5eb14MGDbLs3hXrxx9/tHbs2OEvarR4/Su57Ald9FG6W3bt2hVwgxn717vYyVF+//33KO9y3qKffvpJ7A+7tG7dWjp37iyVKlWSTz75xBQ0OMayZcvKL7/84rwg/n+JnnvuObFbRCHlixSHdgdrfelNdXyTxrh//37fy4Q/3nTTTfL0009LampqQFncXG/aXV2jRg0Tj91CkpkzZ0qXLl3MIa5I9RFch077e7NbgdKqVSt/HU2dOtX8PekM+4ezrF+/3hyOuOqqq0xXt90rFjVe/4YS/MT+ESkpKSkydOhQGThwoEyePNmUKFp9BC9z2vdGgQIFxP5hJbNmzZKWLVuaevId/tK6Gj9+vNi9L1K1alV54IEHLhhvgqsoy7snwUehs1t9UrhwYf8avi9gvWOUmya7O15uu+02sX/Bys6dO2XEiBHi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" alt="plot of chunk pressure"/></p>
+
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+
+<p>We want to see all of your code, guys! So go ahead and fix it - make the code visible by removing the whole echo part, leaving just {r pressure}. </p>
+
+<p>Knit again! Is the code there? Yes! And we want it there! </p>
+
+<p>The plot is still ugly though&hellip;</p>
+
+<h3>Ggplot 2</h3>
+
+<p>Ggplot 2 is a package for data visualization - a part of tidyverse. If you have tidyverse installed, you have ggplot2. Make a new chunk and read in the tidyverse library, if you haven&#39;t done so yet</p>
+
+<p>We will go through basics step by step (I basically copied this tutorial: <a href="http://r-statistics.co/ggplot2-Tutorial-With-R.html">http://r-statistics.co/ggplot2-Tutorial-With-R.html</a>)</p>
+
+<h4>Base setup</h4>
+
+<p>First, you need to tell ggplot what dataset to use. This is done using the ggplot(df) function, where df is a dataframe that contains all features needed to make the plot. This is the most basic step.</p>
+
+<pre><code class="r">ggplot(df) # the most basic setup
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>Optionally you can add whatever aesthetics you want to apply to your ggplot (inside aes() argument) - such as X and Y axis by specifying the respective variables from the dataset. The variable based on which the color, size, shape and stroke should change can also be specified here itself. The aesthetics specified here will be inherited by all the geom layers you will add later.</p>
+
+<pre><code class="r">#Examples of setups with different aesthetics:
+
+ggplot(df, aes(x=gender)) # if only X-axis is known. The Y-axis can be specified later
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<pre><code class="r">ggplot(df, aes(x=gender, y=balloon)) # if both X and Y axes are fixed for all layers.
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<pre><code class="r">ggplot(df, aes(x=breath_hold, color=gender))  # Each category of the &#39;gender&#39; variable will now have a distinct  color, once a geom is added.
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>As you can see, this graph does not show any data yet, we need to give ggplot more information!  We can do it by adding &#39;geoms&#39; (layers) to our base setup.</p>
+
+<h4>Geoms</h4>
+
+<p>Once the base setup is done, you can append the geoms one on top of the other by using the plus sign! So technically all plots can be produced with the same structre: </p>
+
+<p>basesetup +
+  geom 1 +
+  geom 2 +
+  &hellip;</p>
+
+<p>There is a lot of different geoms in the ggplot2 package. See the cheatsheet to have an idea: <a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf</a> </p>
+
+<h5>geom_histogram()</h5>
+
+<p>Let&#39;s say we just want to see what is going on in the tongue_twist measure. We need to know that it&#39;s continuous. From the cheatsheet, we can see that one of our options to check what&#39;s going on is to see distribution of values using geom_histogram:</p>
+
+<pre><code class="r">ggplot(df, aes(x=tongue_twist))+
+  geom_histogram()
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>We can kind of see already, what is going on, but let&#39;s make it prettier by changing one of prarameters of geom:</p>
+
+<pre><code class="r">ggplot(df, aes(x=tongue_twist))+
+  geom_histogram(binwidth = 1) #you can change binwidth if you want to, it&#39;s cosmetic
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>Geom_histrogram just showed counts for different values of tongue twister column - majority reported time around 40 seconds. </p>
+
+<p>Bonus question: Is there something weird with tongue twister data?</p>
+
+<p>Practice:
+Make a ggplot with geom_histogram to see distribution of choose_rand_num (Make a code chunk for it). </p>
+
+<pre><code class="r">ggplot(df, aes(x=choose_rand_num))+
+  geom_histogram(binwidth = 0.5)
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>Question: Do you think it&#39;s normally distributed? </p>
+
+<p>Next week we will learn how to check for sure!</p>
+
+<h5>geom_bar()</h5>
+
+<p>Bar plots are fun and pretty simple.
+If we specify only x coordinate - geom_bar will put counts on y coordinate.</p>
+
+<p>Let&#39;s try it out by specifying x coordinate to show gender:</p>
+
+<pre><code class="r">ggplot(df, aes(x=gender))+ 
+  geom_bar() 
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>If we know y-coordinate too, then we need to help geom_bar() to decide what to do with data instead of counting:</p>
+
+<pre><code class="r">ggplot(df, aes(x=gender, y=balloon))+
+  geom_bar(stat=&#39;summary&#39;, fun.y = mean) #we ask to show us the mean of values on y coordinate
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<p>As you can see, geoms are pretty flexible! We can change functionality by changing stuff in parantheses - as you saw in geom_bar(stat=&#39;summary&#39;, fun.y = mean) </p>
+
+<h5>geom_errorbar()</h5>
+
+<p>Needs specification in the parantheses:
+geom_errorbar(stat = &#39;summary&#39;, fun.data = mean_se)</p>
+
+<pre><code class="r">ggplot(df, aes(x=gender, y=balloon))+
+  geom_bar(stat=&#39;summary&#39;, fun.y = mean)+
+  geom_errorbar(stat = &#39;summary&#39;, fun.data = mean_se)
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<h5>More layers and aesthetics</h5>
+
+<p>With ggplot, we can get more and more layers and settings - to make the plot look exactly like we want it.</p>
+
+<p>I tried to make the previous plot pretty. </p>
+
+<p>Try to understand the script below, what does each geom do? What happens when you change settings?</p>
+
+<pre><code class="r">ggplot(df, aes(x=gender, y=balloon, fill = gender))+
+  geom_bar(stat=&#39;summary&#39;, fun.y = mean, width = 0.5)+
+  geom_errorbar(stat = &#39;summary&#39;, fun.data = mean_se, width = 0.2)+
+  labs(x = &quot;Gender&quot;, y = &quot;Balloon time&quot;)+
+  theme_minimal()
+</code></pre>
+
+<pre><code>## Error: You&#39;re passing a function as global data.
+## Have you misspelled the `data` argument in `ggplot()`
+</code></pre>
+
+<h4>Visualization exercise</h4>
+
+<ol>
+<li><p>Identically to bar plots we&#39;ve made above, make a bar plot showing average shoesize according to handedness.</p></li>
+<li><p>Try to make it pretty!</p></li>
+</ol>
+
+<h2>Homework exercises</h2>
+
+<ol>
+<li><p>Make sure to finish Part 2 - before Tuesday Cognition and Communication class (just read it and solve the 3 questions in exercises, you&#39;ll feel better in the class)</p></li>
+<li><p>Do the visualization exercise</p></li>
+<li><p>Play around with Ggplot! Use the ggplot cheatsheet, change different parts of your code and see what changed</p></li>
+</ol>
+
+<p>3.(Optional) Go through Chapter 3 in &#39;R for Data Science&#39; book (<a href="http://r4ds.had.co.nz/index.html">http://r4ds.had.co.nz/index.html</a>) </p>
+
+</body>
+
+</html>
+
