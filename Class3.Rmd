@@ -33,7 +33,7 @@ In the setup chunk, you can change default settings for all chunks (e.g. see Com
 ```{r setup}
 #Command 1: find default chunk options (opts_chunk), and set the setting echo (whether to show your code) to TRUE 
 knitr::opts_chunk$set(echo = TRUE)
-
+library(tidyverse)
 
 #Command 2: set a new working directory to ALL chunks - not just the current chunk
 #You need to remove the # for it to work
@@ -186,11 +186,9 @@ Try the following exercises to practice summarise(), group_by(), mean() and pipe
 1. Is there a gender difference when it comes to balloon balancing?
 
 ```{r}
-gendered_balancing <- df %>% 
-  group_by(gender) %>% 
-  summarise(mean(balloon_balance))
-
-gendered_balancing
+summary_balloon_balance_bygender <- df %>%
+  group_by(gender) %>%
+summarise(mean(df$balloon_balance))
 ```
 
 2. Is there a relation between sound level preference and which cola was chosen?
@@ -200,8 +198,10 @@ sound_coke <- df %>%
   group_by(taste_cola) %>% 
   summarise(mean(sound_level_pref))
 
-sound_coke
+view(sound_coke)
+#Seems like there is a tendency that people who liked the S-cola in general prefer a higer sound level.
 ```
+
 
 3. Does handedness influence average tongue twisting speed?
 
