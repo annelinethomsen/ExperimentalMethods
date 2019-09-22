@@ -301,18 +301,22 @@ Try the following exercises to practice summarise(), group_by(), mean() and pipe
 ```r
 summary_balloon_balance_bygender <- df %>%
   group_by(gender) %>%
-summarise(mean(df$balloon_balance))
+summarise(mean(balloon_balance))
+view(summary_balloon_balance_bygender)
+
+#Mean for males = 50,47917, Mean for females =  22.76000
 ```
 
 2. Is there a relation between sound level preference and which cola was chosen?
 
 
 ```r
-sound_coke <- df %>% 
-  group_by(taste_cola) %>% 
+sound_coke <- df %>%
+  group_by(taste_cola) %>%
   summarise(mean(sound_level_pref))
 
 view(sound_coke)
+#S-cola = 26.28000, L-cola = 23.78378
 #Seems like there is a tendency that people who liked the S-cola in general prefer a higer sound level.
 ```
 
@@ -325,22 +329,18 @@ view(sound_coke)
 
 
 ```r
-hand_tongue <- df %>% 
-  group_by(handedness) %>% 
-  summarise(mean(tongue_twist),n())
+hand_tongue <- df %>%
+group_by(handedness) %>%
+  summarise(mean(tongue_twist))
 
-hand_tongue
-```
-
-```
-## # A tibble: 3 x 3
-##   handedness   `mean(tongue_twist)` `n()`
-##   <chr>                       <dbl> <int>
-## 1 Ambidextrous                 50       1
-## 2 Left-handed                  50.7     8
-## 3 Right-handed                 45.4    53
+view(hand_tongue)
+# It seems like people who are righthanded performs better in the tongue twister task
 ```
   
+
+```r
+#Not really sure how to solve exercise 3.a and 3.b?
+```
 
 ## Part 3: Including Plots
 R can draw plots, but they are not that pretty.
@@ -376,7 +376,7 @@ First, you need to tell ggplot what dataset to use. This is done using the ggplo
 ggplot(df) # the most basic setup
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png)
 
 
 Optionally you can add whatever aesthetics you want to apply to your ggplot (inside aes() argument) - such as X and Y axis by specifying the respective variables from the dataset. The variable based on which the color, size, shape and stroke should change can also be specified here itself. The aesthetics specified here will be inherited by all the geom layers you will add later.
@@ -388,19 +388,19 @@ Optionally you can add whatever aesthetics you want to apply to your ggplot (ins
 ggplot(df, aes(x=gender)) # if only X-axis is known. The Y-axis can be specified later
 ```
 
-![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png)
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)
 
 ```r
 ggplot(df, aes(x=gender, y=balloon)) # if both X and Y axes are fixed for all layers.
 ```
 
-![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-2.png)
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-2.png)
 
 ```r
 ggplot(df, aes(x=breath_hold, color=gender))  # Each category of the 'gender' variable will now have a distinct  color, once a geom is added.
 ```
 
-![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-3.png)
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-3.png)
 
 
 As you can see, this graph does not show any data yet, we need to give ggplot more information!  We can do it by adding 'geoms' (layers) to our base setup.
@@ -429,7 +429,7 @@ ggplot(df, aes(x=tongue_twist))+geom_histogram()
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
 
 We can kind of see already, what is going on, but let's make it prettier by changing one of prarameters of geom:
 
@@ -437,7 +437,7 @@ We can kind of see already, what is going on, but let's make it prettier by chan
 ggplot(df, aes(x=tongue_twist))+geom_histogram(binwidth = 1) #you can change binwidth if you want to, it's cosmetic
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
 
 Geom_histrogram just showed counts for different values of tongue twister column - majority reported time around 40 seconds. 
 
@@ -451,7 +451,7 @@ Make a ggplot with geom_histogram to see distribution of choose_rand_num (Make a
 ggplot(df, aes(x=choose_rand_num))+geom_histogram(binwidth = 0.5)
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
+![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
 
 Question: Do you think it's normally distributed? 
 
@@ -469,7 +469,7 @@ Let's try it out by specifying x coordinate to show gender:
 ggplot(df, aes(x=gender)) + geom_bar() 
 ```
 
-![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
+![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
 
 
 If we know y-coordinate too, then we need to help geom_bar() to decide what to do with data instead of counting:
@@ -478,7 +478,7 @@ If we know y-coordinate too, then we need to help geom_bar() to decide what to d
 ggplot(df, aes(x=gender, y=balloon)) + geom_bar(stat='summary', fun.y = mean) #we ask to show us the mean of values on y coordinate
 ```
 
-![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
 
 As you can see, geoms are pretty flexible! We can change functionality by changing stuff in parantheses - as you saw in geom_bar(stat='summary', fun.y = mean) 
 
@@ -493,7 +493,7 @@ ggplot(df, aes(x=gender, y=balloon))+
   geom_errorbar(stat = 'summary', fun.data = mean_se)
 ```
 
-![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
 
 
 
@@ -513,7 +513,7 @@ ggplot(df, aes(x=gender, y=balloon, fill = gender))+
   theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
+![plot of chunk unnamed-chunk-21](figure/unnamed-chunk-21-1.png)
 
 #### Visualization exercise
 1. Identically to bar plots we've made above, make a bar plot showing average shoesize according to handedness.

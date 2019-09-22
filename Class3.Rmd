@@ -189,7 +189,10 @@ Try the following exercises to practice summarise(), group_by(), mean() and pipe
 summary_balloon_balance_bygender <- df %>%
   group_by(gender) %>%
 summarise(mean(balloon_balance))
-#It seems like there is no difference? The mean for each gender is 33.5
+
+view(summary_balloon_balance_bygender)
+
+#Mean for males = 50,47917, Mean for females =  22.76000
 ```
 
 2. Is there a relation between sound level preference and which cola was chosen?
@@ -200,6 +203,7 @@ sound_coke <- df %>%
   summarise(mean(sound_level_pref))
 
 view(sound_coke)
+#S-cola = 26.28000, L-cola = 23.78378
 #Seems like there is a tendency that people who liked the S-cola in general prefer a higer sound level.
 ```
 
@@ -316,7 +320,7 @@ If we specify only x coordinate - geom_bar will put counts on y coordinate.
 Let's try it out by specifying x coordinate to show gender:
 
 ```{r}
-ggplot(df, aes(x=gender)) + geom_bar() 
+ggplot(df, aes(x=gender)) + geom_bar()
 ```
 
 
@@ -348,7 +352,7 @@ Try to understand the script below, what does each geom do? What happens when yo
 
 ```{r}
 
-ggplot(df, aes(x=gender, y=balloon, fill = gender))+
+ggplot(df, aes(x=gender, y=balloon, fill = gender)+
   geom_bar(stat='summary', fun.y = mean, width = 0.5)+
   geom_errorbar(stat = 'summary', fun.data = mean_se, width = 0.2)+
   labs(x = "Gender", y = "Balloon time")+

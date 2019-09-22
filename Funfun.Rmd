@@ -1,0 +1,60 @@
+## Chapter 4 - Discovering Statistics Using R
+
+# I'm using the data from the personalitytest to try all the different functions introduced throughout the chapter
+
+```{reading the data frame}
+df <- read_csv("NEW_CogSciPersonalityTest2019 (1).csv")
+```
+
+# I get tidyverse into my library
+
+```{r}
+library(tidyverse)
+```
+
+#I tell ggplot which dataframe to use:
+
+```{r}
+ggplot(df)
+```
+
+# I group something haha
+
+```{r}
+summary_gender_mean_showsize <- df %>%
+  group_by(gender) %>%
+summarize(mean(shoesize))
+```
+
+# I tell ggplot to make a graph with gender on the x-axis and the mean showsize on the y-axis)
+
+```{r}
+ggplot(df, aes(x=gender, y=shoesize)) + geom_bar(stat='summary', fun.y = mean)
+```
+
+### Gender and Balloon Balance
+
+# I want to make a histogram that shows the mean of time balancing a balloon according to sex 
+
+```{r}
+ggplot(df, aes(x=gender, y=balloon_balance)) + geom_bar(stat='summary', fun.y = mean)
+```
+
+# I just did this to check if the mean values were correct:
+
+```{r}
+gender_balloon_balance <- df %>%
+  group_by(gender) %>%
+  summarise(mean(balloon_balance))
+```
+
+# Fortunately it was correct
+
+# Now I want the bars to have different colours:
+
+```{r}
+ggplot(df, aes(x=gender, y=balloon_balance, fill = gender))+
+  geom_bar(stat='summary', fun.y = mean, width = 0.5)+
+  labs(x = "Gender", y = "Balloon time")+
+  theme_minimal()
+```
