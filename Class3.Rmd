@@ -188,7 +188,7 @@ Try the following exercises to practice summarise(), group_by(), mean() and pipe
 ```{r}
 summary_balloon_balance_bygender <- df %>%
   group_by(gender) %>%
-summarise(mean(balloon_balance))
+  summarise(mean(balloon_balance))
 
 view(summary_balloon_balance_bygender)
 
@@ -224,7 +224,16 @@ view(hand_tongue)
 ```
   
 ```{r}
-#Not really sure how to solve exercise 3.a and 3.b?
+groupby_hand <- group_by(df, handedness)
+
+summarise(n_hand=n(), groupby_hand, (mean(tongue_twist)))
+
+#  <chr>         <int>                  <dbl>
+#1 Ambidextrous      1                   50  
+#2 Left-handed       8                   50.7
+#3 Right-handed     53                   45.4
+
+#The mean is more reliable when the number of people is higher. (The more samples, the more accurate model)
 ```
 
 ## Part 3: Including Plots
