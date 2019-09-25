@@ -49,6 +49,14 @@ ggplot(Data_ocular_rl, aes(x=ocular_dom, y=breath_hold, fill = ocular_dom)) +
   scale_fill_hue(l=50)
 ```
 
+I try to do this table thing:
+
+```{r}
+summary_breath_hold_by_ocular <- Data_ocular_rl %>%
+  group_by(ocular_dom) %>%
+  summarise(mean(breath_hold), sd(breath_hold))
+```
+
 Explain your results in plain terms here: 
 
 ---
@@ -57,8 +65,21 @@ Explain your results in plain terms here:
 
 Who likes silence vs. noise best? Males or females? Also in this case you should plot the data using ggplot2 (including error bars), then use the mean() and sd() functions to find mean and standard deviation of the two genders.
 
-```{r question2}
+I make a ggplot
 
+```{r}
+ggplot(Full_personality_data, aes(x = gender, y = sound_level_pref, fill = gender)) + 
+  geom_bar(stat = 'summary', fun.y = mean, width = 0.5) +
+  geom_errorbar(stat = 'summary', fun.data =  mean_se, width = 0.2) +
+  labs(x = "Gender", y = "Mean preferred sound level") + 
+  scale_fill_hue(l=50)
+```
+
+finding mean and sd for each gender
+```{r}
+summary_preferred_sound_level <- Full_personality_data %>%
+  group_by(gender) %>%
+  summarise(mean(sound_level_pref), sd(sound_level_pref))
 ```
 
 Explain your results in plain terms here: 
