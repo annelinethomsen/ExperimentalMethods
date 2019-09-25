@@ -90,9 +90,40 @@ Explain your results in plain terms here:
 
 Are the breath_hold data normally distributed? Provide visual and numeric support for your answer.
 
+I start out making a frequency map (?) to see what the graph looks like and add a line that shows the standard deviation. 
 ```{r question3}
-
+ggplot(Full_personality_data, aes(x=breath_hold)) + geom_histogram(aes(y = ..density..), colour = "black", fill = "white") + stat_function(fun = dnorm, args = list(mean = mean(Full_personality_data$breath_hold), sd = sd(Full_personality_data$breath_hold)), colour = "red", size = 1)
 ```
+#What does ...density... do??
+#What does the args = list do???
+
+Next I make a qq-plot of my data:
+
+```{r making qq-plot}
+qplot(sample = Full_personality_data$breath_hold) + labs(x="Expected values", y="Observed value")
+```
+
+#How do I add the straight line with the ideal normal distribution?
+
+I install the package:
+
+```{r include=FALSE}
+install.packages("pastecs")
+```
+
+Now I try to make a test on the data:
+
+```{r}
+round(pastecs::stat.desc(cbind(Full_personality_data$breath_hold), basic = FALSE, norm = TRUE), digits = 2)
+```
+
+This gives me following values:
+skew.2SE = 0.95
+kurt.2SE = -0.30
+normtest.p = 0.04
+
+Since the skew has to be under 1, and the kurtosis as close to 0 as possible, and the Shairo-Wilk test has to be under the trehshold of 0.05, I would say this distribution is normal even though the p-value is under 0.05, cause it's very close to 0.05. (??)
+#Aren't these results a bit contradicting??
 
 
 Explain your results in plain terms here: 
