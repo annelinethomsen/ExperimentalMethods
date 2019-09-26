@@ -167,8 +167,18 @@ ggplot(Full_personality_data, aes(x = balloon)) + geom_histogram(aes(y = ..densi
 
 At the graph I notice there is an outlier, so to get rid of it, I remove all data, that has a value bigger than the mean + 3*sd:
 ```{r}
-Balloon_data
+Full_personality_data$balloon_zscores <- ((Full_personality_data$balloon - mean(Full_personality_data$balloon)) / sd(Full_personality_data$balloon))
+
+Balloon_filtered <- filter(Full_personality_data, Full_personality_data$balloon_zscores < 3 & Full_personality_data$balloon_zscores > -3)
 ```
+
+I try to run the exact same code for the ggplot, to see if the outliers has been sorted out:
+```{r}
+ggplot(Balloon_filtered, aes(x = balloon)) + geom_histogram(aes(y = ..density..), binwidth = 0.25, color = "black", fill = "white") + ggtitle("Distribution of balloon data") + stat_function(fun = dnorm, args = list(mean = mean(Balloon_filtered$balloon, na.rm = TRUE), sd = sd(Balloon_filtered$balloon, na.rm = TRUE)), colour= "red", size = 1)
+```
+
+It seems like the outlier on the graph is actually not considered as an outlier? According to the mean+3*sd...?
+
 
 Explain your results in plain terms here: 
 
@@ -178,10 +188,21 @@ Explain your results in plain terms here:
 
 Shoe size could tell us something about general body size, which could also be connected to one's ability to hold your breath. In other words we predict that there is a positive relation between shoe size and how long time CogSci students can hold their breath. Try plotting the two sets of data against each other using a scatter plot (hint: both variables are continuous variables). Bonus question: Males and females have different body sizes. Use grouping in your plot to distinguish the relationship between shoe size and holding breath for males and females.
 
+At first I just make a simple scatterplot, and it's a bit messy...
 ```{r question5}
-
+ggplot(Full_personality_data, aes(x = shoesize, y = breath_hold)) + geom_point() + geom_smooth()
 ```
 
+I try to group it by gender:
+```{r}
+Grouped_data <- Full_personality_data
+  group_by(Grouped_data$gender)
+```
+
+I try to see the new scatterplot:
+```{r}
+ggplot(Grouped_data, aes(x = shoesize, y = breath_hold)) + geom_point()
+```
 
 Explain your results in plain terms here: 
 
