@@ -134,10 +134,41 @@ Explain your results in plain terms here:
 
 Are the Balloon reaction time data (balloon and balloon_balance) normally distributed? Provide visual and numeric support for your answer.
 
-```{r question4}
+# Would you check for outliers as the first thing?
 
+Start out with the numeric data for balloon
+```{r question4}
+round(pastecs::stat.desc(Full_personality_data$balloon, basic = FALSE, norm = TRUE), digits = 2)
 ```
 
+I get following results:
+skew.2SE = 3.31
+kurt.2SE = 2.38
+Normtest.p = 0.00
+
+The skew is way over 1, kurtosis far from 0, p-value under 0.05 = non-significant (?) at least not normally distributed. 
+
+I do the same to the balloon_balance data:
+```{r}
+round(pastecs::stat.desc(Full_personality_data$balloon_balance, basic = FALSE, norm = TRUE), digits = 2)
+```
+
+skew.2SE = 2.02
+kurt.2SE = -0.25
+Normtest.p = 0.00
+
+The skew is over 1, but the kurt is a bit close to 0, but the p-value is 0, so this indicates that the test i not normally distributed.
+
+
+Now I want to do the visual part for balloon:
+```{r}
+ggplot(Full_personality_data, aes(x = balloon)) + geom_histogram(aes(y = ..density..), binwidth = 0.25, color = "black", fill = "white") + ggtitle("Distribution of balloon data") + stat_function(fun = dnorm, args = list(mean = mean(Full_personality_data$balloon, na.rm = TRUE), sd = sd(Full_personality_data$balloon, na.rm = TRUE)), colour= "red", size = 1)
+```
+
+At the graph I notice there is an outlier, so to get rid of it, I remove all data, that has a value bigger than the mean + 3*sd:
+```{r}
+Balloon_data
+```
 
 Explain your results in plain terms here: 
 
