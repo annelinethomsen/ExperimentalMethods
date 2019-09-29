@@ -33,13 +33,13 @@ Once you are done loading the data, you can start working on the questions below
 
 Who can hold their breath longer on average, those with right or left ocular dominance? Plot the data using ggplot2 to find out. The plots should include error bars (depicting the standard error of the means). Then use the mean() and sd() functions to find mean and standard deviation of the two eye dominance groups.
 
-I make a new dataframe with only right and left.
+The 'filter function' is used to make a new  dataframe, where the participans with no dominant eye (the ones who answered "Both") are sorted out, to make the results more accurate. 
 
 ```{r question1}
 Data_ocular_rl <- filter(Full_personality_data, Full_personality_data$ocular_dom == "Right" | Full_personality_data$ocular_dom == "Left")
 ```
 
-I try to make the ggplot
+This is how the ggplot looks of the new dataframe.
 
 ```{r question1, echo=TRUE}
 ggplot(Data_ocular_rl, aes(x=ocular_dom, y=breath_hold, fill = ocular_dom)) + 
@@ -49,7 +49,9 @@ ggplot(Data_ocular_rl, aes(x=ocular_dom, y=breath_hold, fill = ocular_dom)) +
   scale_fill_hue(l=50)
 ```
 
-I try to do this table thing:
+####Should I explain what we basically and visually see in the graph???
+
+The summarise-function is used to find the mean and the standard deviation for each of the groups.
 
 ```{r}
 summary_breath_hold_by_ocular <- Data_ocular_rl %>%
@@ -57,7 +59,9 @@ summary_breath_hold_by_ocular <- Data_ocular_rl %>%
   summarise(mean(breath_hold), sd(breath_hold))
 ```
 
-Explain your results in plain terms here: 
+Explain your results in plain terms here:
+
+???
 
 ---
 
@@ -65,7 +69,7 @@ Explain your results in plain terms here:
 
 Who likes silence vs. noise best? Males or females? Also in this case you should plot the data using ggplot2 (including error bars), then use the mean() and sd() functions to find mean and standard deviation of the two genders.
 
-I make a ggplot
+This is how a bar plot of the looks like. 
 
 ```{r}
 ggplot(Full_personality_data, aes(x = gender, y = sound_level_pref, fill = gender)) + 
@@ -75,7 +79,7 @@ ggplot(Full_personality_data, aes(x = gender, y = sound_level_pref, fill = gende
   scale_fill_hue(l=50)
 ```
 
-finding mean and sd for each gender
+The summarise-function is used to find the mean and the standard deviation for each gender.
 ```{r}
 summary_preferred_sound_level <- Full_personality_data %>%
   group_by(gender) %>%
@@ -84,47 +88,67 @@ summary_preferred_sound_level <- Full_personality_data %>%
 
 Explain your results in plain terms here: 
 
+??? Should I look for outliers, now that the standard deviation is so high?
 ---
 
 #### Question 3
 
 Are the breath_hold data normally distributed? Provide visual and numeric support for your answer.
 
-I start out making a frequency map (?) to see what the graph looks like and add a line that shows the standard deviation. 
-```{r question3}
+To visually investigate the distribution of the breath_hold data a frequency distribution and a qqplot is made.
+
+```{r plotting frequency distribution}
 ggplot(Full_personality_data, aes(x=breath_hold)) + geom_histogram(aes(y = ..density..), colour = "black", fill = "white") + stat_function(fun = dnorm, args = list(mean = mean(Full_personality_data$breath_hold), sd = sd(Full_personality_data$breath_hold)), colour = "red", size = 1)
 ```
-#What does ...density... do??
+
+#What does ...density... do???
 #What does the args = list do???
 
-Next I make a qq-plot of my data:
+To clean the data from outliers every observation that is above the mean + 2 * sd is removed from the dataset.
 
-```{r making qq-plot}
+```{r removing outliers}
+Full_personality_data$breath_hold_zscores <- ((Full_personality_data$breath_hold - mean(Full_personality_data$breath_hold)) / sd(Full_personality_data$breath_hold))
+
+Breath_hold_filtered <- filter(Full_personality_data, Full_personality_data$breath_hold_zscores < 2 & Full_personality_data$breath_hold_zscores > -2)
+```
+
+```{r plotting data without outliers}
+ggplot(Breath_hold_filtered, aes(x=breath_hold)) + geom_histogram(aes(y = ..density..), colour = "black", fill = "white") + stat_function(fun = dnorm, args = list(mean = mean(Breath_hold_filtered$breath_hold), sd = sd(Breath_hold_filtered$breath_hold)), colour = "red", size = 1)
+```
+
+```{r making qq-plot of data outliers included}
 qplot(sample = Full_personality_data$breath_hold) + labs(x="Expected values", y="Observed value")
 ```
 
-#How do I add the straight line with the ideal normal distribution?
+```{r making qq-plot of data outliers removed}
+qplot(sample = Breath_hold_filtered$breath_hold) + labs(x="Expected values", y="Observed value")
+```
 
-I install the package:
+#How do I add the straight line with the ideal normal distribution???
+Right now I have kept both codes with and without outliers, because i'm not sure whether to include them or not. 
 
 ```{r include=FALSE}
 install.packages("pastecs")
 ```
 
-Now I try to make a test on the data:
+To investigate the breath hold data numeric the function stat.desc is used.
 
-```{r}
+```{r using stat.desc}
 round(pastecs::stat.desc(cbind(Full_personality_data$breath_hold), basic = FALSE, norm = TRUE), digits = 2)
 ```
 
-This gives me following values:
+This gives following values:
 skew.2SE = 0.95
 kurt.2SE = -0.30
 normtest.p = 0.04
 
-Since the skew has to be under 1, and the kurtosis as close to 0 as possible, and the Shairo-Wilk test has to be under the trehshold of 0.05, I would say this distribution is normal even though the p-value is under 0.05, cause it's very close to 0.05. (??)
-#Aren't these results a bit contradicting??
+Since the skew has to be under 1, and the kurtosis as close to 0 as possible, and the p-value has to be under the trehshold of 0.05, I would say this distribution is normal even though the p-value is under 0.05, cause it's very close to 0.05. (??)
 
+#Aren't these results a bit contradicting???
+
+```{r calculating confidence intervals}
+(mean(Breath_hold_filtered$breath_hold) + 1.96 * sd(Breath_hold_filtered$breath_hold)) - (mean(Breath_hold_filtered$breath_hold) - 1.96 * sd(Breath_hold_filtered$breath_hold))
+```
 
 Explain your results in plain terms here: 
 
@@ -172,10 +196,6 @@ Full_personality_data$balloon_zscores <- ((Full_personality_data$balloon - mean(
 Balloon_filtered <- filter(Full_personality_data, Full_personality_data$balloon_zscores < 3 & Full_personality_data$balloon_zscores > -3)
 ```
 
-```{r}
-
-```
-
 I try to run the exact same code for the ggplot, to see if the outliers has been sorted out:
 ```{r}
 ggplot(Balloon_filtered, aes(x = balloon)) + geom_histogram(aes(y = ..density..), binwidth = 0.25, color = "black", fill = "white") + ggtitle("Distribution of balloon data") + stat_function(fun = dnorm, args = list(mean = mean(Balloon_filtered$balloon, na.rm = TRUE), sd = sd(Balloon_filtered$balloon, na.rm = TRUE)), colour= "red", size = 1)
@@ -192,30 +212,30 @@ Explain your results in plain terms here:
 
 Shoe size could tell us something about general body size, which could also be connected to one's ability to hold your breath. In other words we predict that there is a positive relation between shoe size and how long time CogSci students can hold their breath. Try plotting the two sets of data against each other using a scatter plot (hint: both variables are continuous variables). Bonus question: Males and females have different body sizes. Use grouping in your plot to distinguish the relationship between shoe size and holding breath for males and females.
 
-At first I just make a simple scatterplot, and it's a bit messy...
-```{r question5}
-ggplot(Full_personality_data, aes(x = shoesize, y = breath_hold)) + geom_point() + geom_smooth()
+```{r making scatterplot}
+ggplot(Full_personality_data, aes(x=shoesize, y=breath_hold)) + geom_point(colour = "Black") + geom_smooth()
 ```
 
-I try to group it by gender:
-```{r}
-Grouped_data <- group_by(Full_personality_data, gender)
-?group_by
+??? What to conclude out of this graph?
+??? What does the hint mean?
 
+```{r grouping data by gender}
 Group_gender <- Full_personality_data %>% group_by(gender)
+#R read 'Group_gender' as a value, so the it's manually set as a data.frame.
 Group_gender<-as.data.frame(Group_gender)
 ```
 
-I try to see the new scatterplot:
-```{r}
+```{r making scatterplot}
 ggplot(Group_gender, aes(x = shoesize, y = breath_hold, colour = gender)) + geom_point() + geom_smooth(method = "lm")
 ```
 
-
-```{r}
+```{r making scatterplot with one linear model}
 ggplot(Group_gender, aes(x = shoesize, y = breath_hold)) + geom_point(aes(colour=gender)) + geom_smooth(method = "lm")
 ```
 
 Explain your results in plain terms here: 
-
+When looking at this scatterplot it seems that for the females there is a correlation between showsize and the time one can hold her breath; the bigger the shoe size, the longer the breath_hold. 
+Opposed to the females this data indicates that for males there's no particular correlation between 
+The only reason the linear model representing both genders are not Is because males on average can hold their breath longer than girls.
+This indicates that there might not be a correlation 
 
