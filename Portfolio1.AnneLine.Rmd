@@ -33,33 +33,26 @@ Once you are done loading the data, you can start working on the questions below
 
 Who can hold their breath longer on average, those with right or left ocular dominance? Plot the data using ggplot2 to find out. The plots should include error bars (depicting the standard error of the means). Then use the mean() and sd() functions to find mean and standard deviation of the two eye dominance groups.
 
-The 'filter function' is used to make a new  dataframe, where the participans with no dominant eye (the ones who answered "Both") are sorted out, to make the results more accurate. 
-
-```{r question1}
+```{r filtering data}
 Data_ocular_rl <- filter(Full_personality_data, Full_personality_data$ocular_dom == "Right" | Full_personality_data$ocular_dom == "Left")
 ```
 
-This is how the ggplot looks of the new dataframe.
-
-```{r question1, echo=TRUE}
+```{r plotting data}
 ggplot(Data_ocular_rl, aes(x=ocular_dom, y=breath_hold, fill = ocular_dom)) + 
   geom_bar(stat="summary", fun.y = mean, width = 0.5) +
-  geom_errorbar(stat = 'summary', fun.data = mean_se, width = 0.2)+
+  geom_errorbar(stat = 'summary', fun.data = mean_se, width = 0.3)+
   labs(x = "Dominant ocular", y = "Mean breath hold") +
   scale_fill_hue(l=50)
 ```
 
-####Should I explain what we basically and visually see in the graph???
-
-The summarise-function is used to find the mean and the standard deviation for each of the groups.
-
-```{r}
+```{r summary of data}
 summary_breath_hold_by_ocular <- Data_ocular_rl %>%
   group_by(ocular_dom) %>%
   summarise(mean(breath_hold), sd(breath_hold))
 ```
 
 Explain your results in plain terms here:
+From this sample it seems that people with right ocular dominance on average can hold their breath longer than people with left ocular dominance. However the standard deviation is relatively high which indicates that the sample is a poor representation of the population.
 
 ???
 
