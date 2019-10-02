@@ -52,8 +52,7 @@ summary_breath_hold_by_ocular <- Data_ocular_rl %>%
 
 ### Results
 
-From the bar plot and the summary table it seems that people with right ocular dominance are on average able to hold their breath longer than people with left ocular dominance. 
-However the standard deviation is relatively high compared to the sample size, which indicates that the mean is actually a poor model to the data, namely the data points are widely spread from the mean. Moreover the standard error, visualized through the errorbars in the graph, is also quite high and that reduces the representativity of the sample to the population. 
+From the bar plot and the summary table it seems that people with right ocular dominance are on average able to hold their breath longer than people with left ocular dominance. However the standard deviation is relatively high compared to the sample size, which indicates that the mean is actually a poor model to the data, namely the data points are widely spread from the mean. Moreover the standard error visualized through the errorbars in the graph is also quite high and that reduces the representativity of the sample to the population.
 
 So even though it seems that people with right ocular dominance can hold their breath longer compared to people with left ocular dominance, the standard deviation and the standard error points to the claim that there is no significant correlation between dominant ocular and ability to hold your breath.
 
@@ -111,7 +110,7 @@ round(pastecs::stat.desc(cbind(Full_personality_data$breath_hold), basic = FALSE
 ### Results
 
 When looking at the frequency distribution of breath hold, it looks like a normal distribution, but when looking at the skewness, it appears to be a bit posetively skewed. In addition the skew.2SE value is 0.95, and if this value is more than 1, the distribution will be significantly different from a normal distribution.
-According to the qq-plot the points are closely clustered around the line in the interval from -1 to 1 on the x-axis, which could argue for a normal distribution, but since the points in each end of the line does not follow the line, it is more doubtful that the dsitribution could be normal. 
+According to the qq-plot the points are closely clustered around the line in the interval from -1 to 1 on the x-axis, which could argue for a normal distribution, but since the points in each end of the line does not follow the linear regression, it is more doubtful that the distribution could be normal. 
 Finally the p-value found through the Shapiro-Wilk test is under the treshhold of 0.05, which is a clear indication that the distribution is significantly different from the normal distribution. 
 
 So in spite of a frequency distribution that might look like a normal distribution, the skewness, parts of the qq-plot and the p-value indicate that it is not normally distributed. 
@@ -122,7 +121,6 @@ So in spite of a frequency distribution that might look like a normal distributi
 
 Are the Balloon reaction time data (balloon and balloon_balance) normally distributed? Provide visual and numeric support for your answer.
 
-Start out with the numeric data for balloon
 ```{r stat.desc. on balloon data}
 round(pastecs::stat.desc(Full_personality_data$balloon, basic = FALSE, norm = TRUE), digits = 2)
 ```
@@ -161,9 +159,9 @@ qplot(sample = Full_personality_data$balloon_balance) + labs(x="Expected values"
 
 ### Results
 
-It is clear that the balloon balance does not have a normal distribution. There is a clear positive skewness, and the p-value from the Shapiro-Wilk test is 0, which points to a distribution significantly different from normal. Likewise the points in the qq-plot are not clustered closely to the line, especially in the interval 1 to 2 on the x-axis. Thus the distribution of the balloon data is significantly different from the normal distribution.
+It is clear that the balloon balance does not have a normal distribution. There is a clear positive skewness, and the p-value from the Shapiro-Wilk test is 0, which points to a distribution significantly different from normal. Likewise the points in the qq-plot are not clustered closely around the line, especially in the interval 1 to 2 on the x-axis. Thus the distribution of the balloon balance data is significantly different from the normal distribution.
 
-Since the p-value is under 0.05, since the z-score points in the qq-plot does not form a linear line, and since the overall form of the histogram the balloon balance data is significantly different from a normal distribution.
+The same goes for the balloon data, where the p-value is also under 0.05, and where the z-score points in the qq-plot does not form a linear line. The histogram does not have this typical symmetric bell curve, but is also positively skewed. All in all the balloon balance data is significantly different from a normal distribution.
 
 In both graphs there seemed to be outliers that could affect the results, but since none of these can be mathematically defined as outliers (mean + 3sd), they are not removed from the data sets.
 
