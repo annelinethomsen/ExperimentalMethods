@@ -188,6 +188,6 @@ ggplot(Group_gender, aes(x = shoesize, y = breath_hold, colour = gender)) + geom
 ### Results
 
 When looking at the scatterplot there is no correlation between the two variables, since the points are widely spread from the line of linear regression. So the shoesize does not influence the time one can hold his breath.
-When looking at the data for each gender sperately, it appears that males generally have bigger shoe size than females, and that they on average can hold their breath longer than females.
+When looking at the data for each gender seperately, it appears that males generally have bigger shoe size than females, and that they on average can hold their breath longer than females.
 
 ---
