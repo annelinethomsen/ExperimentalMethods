@@ -5,7 +5,7 @@ Sarah_variance <- Sarah - mean(Sarah)
 Mother_variance <- Mother - mean(Mother)
 
 Cov <- (sum((Sarah_variance)*(Mother_variance)))/10-1
-#So I get the covariance -0.5469
+#So I get the covariance -0.5469 - which apparently is incorrect haha
 
 
 #Another way to do it:
