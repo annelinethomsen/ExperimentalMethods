@@ -20,6 +20,20 @@ SMdata$error_mother <- SMdata$Mother - mean(SMdata$Mother)
 SMdata$mul_error <- SMdata$error_sarah * SMdata$error_mother
 
 #Sum up error and divide by degrees of freedom:
-sum(SMdata$mul_error)/(nrow(SMdata)-1)
+Covariance <- sum(SMdata$mul_error)/(nrow(SMdata)-1)
 
 #Covariance = 0.5034
+
+#Finding the Correlation cofficient:
+CorrCoff <- Covariance/(sd(Sarah)*sd(Mother))
+#So the correlation coffiecient is 0.78
+#So there is a positive correlation
+#There is also a very strong relationship (because it's above )
+
+
+library(tidyverse)
+ggplot(SMdata, aes(Sarah, Mother)) + geom_point() + geom_smooth(method = lm)
+
+cor.test(Sarah, Mother)
+
+cov(Sarah, Mother)
