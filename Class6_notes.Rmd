@@ -69,10 +69,12 @@ data <- lapply(files, read_csv) %>%  # apply read_csv() to every element in file
 data <- lapply(files, read.csv) %>% rbind.fill()
 
 
-#We have two different collumns with reaction time, and we want to put these together. 
-data1 <- ifelse(is.na())
-```
+#We have two different collumns with reaction time, and we want to put these together, which we do by making a new collumn called "RT2". (If there's data in "Reaction_Time" then put this into the new collumn and if there's data in "Reaction.time" then put this into the new collumn)
+data$RT2 <- ifelse(is.na(data$Reaction.time), data$Reaction_Time, data$Reaction.time) 
 
+#Now we want to sort out the two collumns "Reaction_Time" and "Reaction.time":
+data3 <- data %>% select(-c(Reaction_Time, Reaction.time))
+```
 
 
 ### Part 2: hands-on t-test in R
@@ -90,6 +92,8 @@ If you just add variables and dataset it comes from, t.test() function performs 
 #Example (you might need to change dataframe name and variable names)
 t.test(Reaction_Time ~ Gender, data = data)
 
+t.test(RT2 ~ Gender, data = data3)
+# t = 7.4726, p-value = 9.201e-14
 ```
 
 
@@ -98,7 +102,8 @@ t.test(Reaction_Time ~ Gender, data = data)
 
 ```{r}
 #change 'var.equal' argument to True to perform a student's t-test, rather than the default Welch's
-
+t.test(RT2 ~ Gender, data = data3, var.equal = T)
+# t = 7.254, p-value = 4.655e-13
 ```
 
 
@@ -107,7 +112,8 @@ t.test(Reaction_Time ~ Gender, data = data)
 More information can be found: http://www.sthda.com/english/wiki/paired-samples-t-test-in-r 
 ```{r}
 #set 'paired' argument to True to perform a paired (dependent) t-test (might not work due to our experimental design)
-
+t.test(RT2 ~ Gender, data = data3, paired = T)
+#It doesn't work, because not all arguments have the same length
 ```
 
 
@@ -118,7 +124,14 @@ More information: http://www.sthda.com/english/wiki/one-sample-t-test-in-r
 t.test(data$Reaction_Time, mu = 0.5)  #a one sample t-test: is mean of our sample different from the theoretical mean of 0.5
 
 #Try to change mu values and see if/how output changes
+t.test(data3$RT2, mu = 0.5)
+#t = -1.4024, p-value = 0.1608
 
+t.test(data3$RT2, mu = 0.6)
+#t = -20.839, p-value < 2.2e-16
+
+t.test(data3$RT2, mu = 0.45)
+#t = 8.3159, df = 5102, p-value < 2.2e-16
 ```
 
 All of the tests above require our data to be normally distributed. What to do when it's not the case?
@@ -129,6 +142,7 @@ All of the tests above require our data to be normally distributed. What to do w
 ```{r}
 #An example 
 WRS2::yuen(Reaction_Time ~ Gender, data = data)
+WRS2::yuen(RT2 ~ Gender, data = data3) # THe package WRS2 does not seem to be in my library even though I just installed it??
 ```
   
   2.5.2 Paired t-test: WRS2::yuend(x, y, tr = 0.2)
@@ -147,7 +161,7 @@ Note that you need to check assumptions for reading time data in condition 1 and
   Hint: filter() function might help. 
 
 ```{r}
-
+round(pastecs::stat.desc(data3$RT2, basic = FALSE, norm = TRUE), digits = 2)
 ```
 
 
