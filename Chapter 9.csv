@@ -1,0 +1,42 @@
+Going through chapter 9 - comparing two means
+
+```{r making dataframe with independent groups}
+participant <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)
+group <- c("Picture","Picture","Picture","Picture","Picture","Picture","Picture","Picture","Picture","Picture","Picture","Picture","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider","Real_Spider")
+anxiety <- c(30,35,45,40,50,35,55,25,30,45,40,50,40,35,50,55,65,55,50,35,30,50,60,39)
+Spider_Anxiety <- data.frame(participant, group, anxiety)
+
+mean(c(anxiety))
+```
+
+```{r making dataframe with repeated-measure group}
+Participant <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+Picture <- c(30,35,45,40,50,35,55,25,30,45,40,50)
+RealSpider <- c(40,35,50,55,65,55,50,35,30,50,60,39)
+SpidAnx <- data.frame(Participant, Picture, RealSpider)
+```
+
+```{r adding new collum with mean for each participant}
+SpidAnx$pMean <- (SpidAnx$Picture + SpidAnx$RealSpider)/2
+```
+
+```{r calculating grand mean}
+GrandMean <- mean(c(SpidAnx$Picture, SpidAnx$RealSpider))
+```
+
+```{r making adjustment}
+SpidAnx$Adjustment <- GrandMean-SpidAnx$pMean
+```
+
+```{r adjusting each collum}
+SpidAnx$Picture_adjustment <- SpidAnx$Picture + SpidAnx$Adjustment
+SpidAnx$RealSpider_adjustment <- SpidAnx$RealSpider + SpidAnx$Adjustment
+```
+
+```{r Cheking by making new mean of the adjusted values}
+SpidAnx$pMean2 <- (SpidAnx$Picture_adjustment + SpidAnx$RealSpider_adjustment)/2
+```
+
+
+
+
