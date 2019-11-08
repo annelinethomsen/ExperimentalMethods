@@ -1,0 +1,144 @@
+---
+title: "Portfolio 3 "Reading Experiment""
+author: "Anne-Line Thomsen"
+date: "8/11/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse, pastecs) #Manually plyr, WR2 does not work for version 3.3.3
+
+setwd("/Users/anne-linethomsen/Documents/R/ExperimentalMethods/PersonalityTest/PersonalityTest/")
+```
+
+## Import data, and tidying
+
+```{r}
+## Import the data files in to R
+files <- list.files(path = "data", pattern = ".csv", full.names = T)
+
+## Read the files in to a tibble
+data <- lapply(files, read.csv) %>% rbind.fill()
+
+## Correcting double columns for same values to one column ##
+data$RT <- ifelse(is.na(data$Reaction.time), data$Reaction_Time, data$Reaction.time) #here we added the new collumn, where the two RT collumns are merged. 
+data <- data %>% select(-c(Reaction_Time, Reaction.time)) #here we removed the two old RT collumns.
+
+# Remove punctuation 
+data$Word <- str_replace_all(data$Word, "[:punct:]", "")
+```
+
+## Importing MRC database and merging with the data from the Reading experiment
+
+```{r - MRC}
+# Import the MRC database
+MRC <- read.csv("MRC_database.csv")
+
+## Adjusting the RT data so it matches the MRC data
+# All letters in the column 'Word' in data are capitalized
+data$Word <- casefold(data$Word, upper = TRUE)
+# The collumn Word are renamed to "word", so it matches the MRC data
+colnames(data)[colnames(data)=="Word"] <- "word"
+
+# The two dataframes data and MRC are now merged into a knew dataframe.
+Mergeddata <- merge(data, MRC, by = "word")
+```
+
+#### Part 1: Which properties of words correlate with word-by-word reading times?
+
+Conducting three iterations of correlation analysis adressing three word properties: word length, word frequency and word number.
+
+```{r - Word length}
+# Check assumptions for RT and nlet - visually
+# We choose to use Pearson's test, and therefore we have to check that it's normally distributed. So that's what we do first. 
+# The other guys did a lot of different things to change the data to find something that would correlate, but none of it worked, so perhaps we will just conclude that there's no correlation between RT and nlet?
+
+ggplot(Mergeddata, aes(sample = RTlog)) + stat_qq() + stat_qq_line() + labs(title = "QQ plot of rt with Normality Line", y = "wordlength", x = "Expected value") + theme_minimal()
+
+# Correlation between RT and word length
+cor.test(Mergeddata$RTlog, Mergeddata$nlet, method = "pearson")
+## The result is non significant 
+
+
+```
+
+```{r - Word frequency}
+
+```
+
+```{r - Word number}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Part 3: Your Reading Data Analysis
+3.1 Checking Assumptions: are your data normally distributed?
+Give a visual and statistical answer by making a histiogram, qqplot and normality test from pastecs::stat.desc (**remember that you can reuse your Class4_notes and other old code**)
+
+Note that you need to check assumptions for reading time data in condition 1 and condition 2 separately, since those represent data from different groups! How can you do that? 
+
+  Hint: filter() function might help. 
+
+```{r}
+
+```
+
+
+3.2 Transformation of data (if needed)
+First, remove obvious outliers in the data. Then try to apply a transformation to the data to make them normally distributed. It's a common practice to log-transform reaction time data, does it work for you?
+```{r}
+
+```
+
+
+3.3 T-test
+Perform a t-test to test if there is a significant difference in reading time between conditions of your experiment. If you performed previous assumptions check and data transformation on subsets of data, make sure you perform the t-test on the whole dataset that contains both conditions and potentially your transformed reaction time variable.
+```{r}
+
+```
+
+
+3.4 Visualize the results. 
+For that, make a plot that demonstrates the mean value of reading time in two conditions with corresponding error bars. It could be for example a bar plot or box plot or violin plot with marks of the mean values (you can reuse code from Class4_notes if you want). Remember that ggplot wants your condition variable to be a factor to plot data in 2 different groups. 
+
+```{r}
+
+```
+
+3.5 Report the results
+
+Example: *Using an independent t-test, we found that the unexpected word did not significantly increase reading time of the word, t(7.66) = 0.46, p > .05, r = 0.16, (M exp = 0.45, M unexp = 0.49)*
+
+M exp and M unexp stand for the mean values in 2 groups, in this case Expected Condition and Unexpected Condition. You can definitely change the way you want to refer to different groups in your experiment. 
+
+
+
+### Part 4 (optional): Extra for your reading data analysis
+
+4.1 Try and compare the results of Welch’s t-test with the results of Student’s t-test. How do they compare?
+
+4.2 T-test can also be made as a linear model (see Fields 9.4.2) try it out and see if you get similar results (you extract the output from a saved linear model using summary())
+
+4.3.Try to run correlation analysis for reading time and word length, now that you have more data (**consider reusing Class5_notes for that**)
+
