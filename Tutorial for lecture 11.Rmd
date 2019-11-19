@@ -2,8 +2,9 @@ Title: Tutorials for lecture 11
 Author: Anne-Line Thomsen
 Date: 19/11 - 2019
 
-```{r}
+```{r include = FALSE}
 library(tidyverse)
+setwd("/Users/anne-linethomsen/Documents/R/ExperimentalMethods/PersonalityTest/PersonalityTest")
 ```
 
 
@@ -44,5 +45,48 @@ plot(rnorm(100),rnorm(100)) # This creates two sets of 100 normally distributed 
 
 
 
+# Tutorial part two:
+
+```{r}
+install.packages("lme4")
+library("lme4")
+```
+
+```{r read data}
+politeness <- read.csv("politeness_data.csv")
+```
+
+```{r}
+boxplot(frequency ~ attitude*gender, col=c("white","lightgray"),politeness)
+```
+
+```{r}
+lmer(frequency ~ attitude, data=politeness)
+
+politeness.model = lmer(frequency ~ attitude + (1|subject) + (1|scenario), data=politeness)
+summary(politeness.model)
+
+politeness.model = lmer(frequency ~ attitude + gender + (1|subject) + (1|scenario), data=politeness)
+summary(politeness.model)
+
+
+
+politeness.null = lmer(frequency ~ gender + (1|subject) + (1|scenario), data=politeness, REML=FALSE)
+politeness.model = lmer(frequency ~ attitude + gender + (1|subject) + (1|scenario), data=politeness, REML=FALSE)
+anova(politeness.null,politeness.model)
+
+```
+
+
+```{r}
+coef(politeness.model)
+
+politeness.model = lmer(frequency ~ attitude + gender + (1+attitude|subject) + (1+attitude|scenario), data = politeness, REML=FALSE)
+
+coef(politeness.model)
+
+politeness.null = lmer(frequency ~ gender + (1+attitude|subject) + (1+attitude|scenario), data=politeness, REML=FALSE)
+anova(politeness.null,politeness.model)
+```
 
 
