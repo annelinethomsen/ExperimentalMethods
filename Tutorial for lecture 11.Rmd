@@ -1,0 +1,48 @@
+Title: Tutorials for lecture 11
+Author: Anne-Line Thomsen
+Date: 19/11 - 2019
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+pitch = c(233,204,242,130,112,142)
+sex = c(rep("female",3),rep("male",3))
+
+my.df = data.frame(sex,pitch)
+
+xmdl = lm(pitch ~ sex, my.df) #The xmdl is a arbitrary name for an object
+
+#To see what this linear model did to the objecet, we will have to do a summary:
+summary(xmdl)
+```
+
+
+```{r}
+mean(my.df[my.df$sex=="female",]$pitch)
+```
+
+
+```{r}
+age = c(14,23,35,48,52,67)
+pitch = c(252,244,240,233,212,204)
+my.df = data.frame(age,pitch)
+xmdl = lm(pitch ~ age, my.df)
+summary(xmdl)
+```
+
+
+```{r}
+plot(fitted(xmdl),residuals(xmdl)) #Residual plot
+```
+
+```{r}
+plot(rnorm(100),rnorm(100)) # This creates two sets of 100 normally distributed random numbers with a mean of 0 and a standard deviation of 1. If you type this in multiple times to create multiple plots, you can get a feel of how a “normal” residual plot should look like.
+```
+
+
+
+
+

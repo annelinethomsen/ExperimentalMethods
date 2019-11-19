@@ -1,0 +1,419 @@
+---
+title: "Class8_notes"
+author: "Anita Kurm"
+date: "11/13/2019"
+output: html_document
+---
+
+## Welcome to Class 8!
+
+Today we will learn how to compare our models and perform **analysis of variance aka ANOVA** in R!
+  
+In the first part of the class we will work with models on the child aggression data, and in the second part of the class - with the partially true but fabricated data and the new 'sex and death' fruit fly data.
+
+
+### Set up: 
+Load package tidyverse and MuMIn (to use Weights() ):
+
+```{r}
+
+```
+
+Make sure that this Markdown is saved in the folder with the child aggression data and sex&death data.  
+
+
+### PART 1: Comparing models
+
+When making models it's pretty easy to get into the race for the best fit to the data and add more and more predictors! But as we have already learned, descriptive models do not necessarily make good generalizable and predictive models. To ensure that you chose the right combination of predictors, looking at the best adjusted R squared might be not enough, as even adjusted R squared can overlook overfitting. 
+
+In this section you can check out the code for comparison of models using different methods: anova(), AIC and BIC
+
+For demonstration purposes, we will use the child aggression data from the last class, so make sure it's in your working directory and load it using read_delim() function from tidyverse specifying the white space as separator:
+
+```{r}
+#loading data
+child <- read_delim("ChildAggression.dat", delim = " ")
+```
+
+
+Right after that we will recall a couple of models we constructed in the last class and the models that were sent to me for the competition!
+
+```{r}
+#models
+m0 <- lm(Aggression ~ 1, child) #null model: predictor is the mean
+m1 <- lm(Aggression ~ Computer_Games, child)
+m2 <- lm(Aggression ~ Computer_Games + Parenting_Style, child)
+m_Jakob <- lm(Aggression ~ Computer_Games + Parenting_Style + Sibling_Aggression, child)
+m_Jonathan <- lm(Aggression ~ Computer_Games + Parenting_Style + Sibling_Aggression + Diet, child)
+```
+
+You can have a look at adjusted R squared only instead of showing the whole summary by using the command summary(model)$adj.r.squared.
+
+*Try it out on every remaining model and see what adjusted R squred they have*
+
+```{r}
+#See adjusted r squared of the models from their summaries
+summary(m0)$adj.r.squared
+
+
+
+```
+
+
+It's time to look at models more objectively!
+
+#### 1.1. anova() for models
+
+  - It will take models as arguments, and return an ANOVA testing whether the more complex model is significantly better at capturing the data than the simpler model. If the resulting p-value is sufficiently low (usually less than 0.05), we conclude that the more complex model is significantly better than the simpler model, and thus favor the more complex model. If the p-value is not sufficiently low (usually greater than 0.05), we should favor the simpler model. 
+    
+    credit and more info: https://bookdown.org/ndphillips/YaRrr/comparing-regression-models-with-anova.html 
+
+To produce an Analysis of Variance table for models:
+
+```{r}
+#anova
+anova(m0, m1, m2, m_Jakob, m_Jonathan)
+```
+
+As you can see, going from simpler model 3 to more complex model 4 does not seem to benefit us. However, going from model 4 to an even more complex model seems to be good. 
+
+In this situation we have to make a difficult choice of either stopping at a relatively simple model 3 or going all the way to complex model 5 that has more predictors.
+
+We can assist our decision making ever further by looking up information criteria that were designed specifically for these kinds of situations. 
+
+
+#### 1.2. Information criteria: AIC and BIC
+
+Information criteria are reasonable ways to capture the trade-off between goodness of fit (which is improved by adding model complexity, i.e. adding more predictors) and parsimony (simpler==better) in comparing models. There is a variety of information criteria and they all have different underlying principles on how they should be calculated. Two of the most used information criteria are AIC and BIC.
+
+Akaike information criterion (AIC) (Akaike, 1974) is a fined technique based on in-sample fit to estimate the likelihood of a model to predict/estimate the future values.
+  
+  AIC is founded on information theory. When a statistical model is used to represent the process that generated the data, the representation will almost never be exact; so some information will be lost by using the model to represent the process. AIC estimates the relative amount of information lost by a given model: the less information a model loses, the higher the quality of that model.
+
+Bayesian information criterion (BIC) (Stone, 1979) is another criteria for model selection that measures the trade-off between model fit and complexity of the model. It is closely related to AIC in the way it's calculated, but it's different. BIC penalizes complexity more than AIC does.
+
+A *lower AIC or BIC value* indicates a *better* model. You can use either AIC or BIC when you select your model, you don't have to use both. 
+
+Although the information criteria will show the best model from a set, they won’t say anything about absolute quality. In other words, if all of your models are poor, AIC and BIC just indicate the best out of a pretty bad bunch. 
+      
+      more info and credit: 
+        https://www.sciencedirect.com/topics/medicine-and-dentistry/akaike-information-criterion
+        https://www.statisticshowto.datasciencecentral.com/akaikes-information-criterion/
+        
+
+Here you can see how to use commands AIC() and BIC() to get information criteria values for your models:
+
+```{r}
+AIC(m0, m1, m2, m_Jakob, m_Jonathan) #lower is better
+
+BIC(m0, m1, m2, m_Jakob, m_Jonathan) #lower is better
+```
+
+
+If you don't like eyeballing the big information criteria numbers to find the best model, you can also use Wights() command on the output of AIC and BIC commands. This will give a 'weight' to your models, *biggest weight* corresponding to the *best model*. It's just another representation of the same information, so it's your choice!
+
+```{r}
+#writing AIC values down
+m_aic <- AIC(m0, m1, m2, m_Jakob, m_Jonathan)
+
+#assigning weights to the models corresponding to their AIC values
+Weights(m_aic)
+
+
+
+#writing down BIC values
+m_bic <- BIC(m0, m1, m2, m_Jakob, m_Jonathan)
+
+#assigning weights to the models corresponding to their AIC values
+Weights(m_bic)
+
+#putting results into one dataframe:
+mdl_com_df <- tibble( Model = c("m0", "m1", "m2", "m_Jakob", "m_Jonathan"),
+                          AIC=m_aic$AIC, 
+                          AIC_Weight = round(Weights(m_aic), 3), #rounding weights so it looks nicer in the dataframe
+                          BIC=m_bic$BIC,
+                          BIC_Weight = round(Weights(m_bic),3) #rounding weights so it looks nicer in the dataframe
+                          )
+
+mdl_com_df #Best model: Lowest AIC/BIC or largest AIC_Weight/BIC_Wegiht (choose what metric you like more, they function absolutely the same way)
+``` 
+
+
+#### Part 1 Exercises
+
+1. Looking at the table from the previous chunk, which model is the best according to AIC, which model according to BIC? What model would you choose as the winner of Top model?
+
+2. Construct 3 models using whatever child aggression predictors you want:
+  First one with one predictor
+  Second one has the previously defined predictor + another predictor
+  Third one has two previously defined predictors + another predictor
+
+3. Compare the models using anova(), and AIC() or BIC()
+
+4. Ask questions if you would like help!
+
+
+
+
+
+### PART 2: ANOVA
+
+More tips on ANOVA in R can be found here: http://homepages.inf.ed.ac.uk/bwebb/statistics/ANOVA_in_R.pdf  
+
+For demonstration purposes, we will fabricate data.  We will imitate measures of happiness in three countries as if we asked 1000 respondents in each. The resulting data is not real, but it will still be based on actual estimates of happiness from 2016 world happiness report, which we will use as the mean values. The standard deviation of 0.8 has been chosen arbitrarily. All happiness values will be drawn from normal distribution with the mean and sd we specify using the command rnorm(number of values, mean = , sd = ). 
+
+
+The first dataset will contain only first three ranking countries: Denmark, Switzerland and Iceland. Due to the way we assigned the happiness values and the fact that happiness levels are not that different in these countries in general, we should not see any significant difference between the groups (countries).
+
+
+The second dataset will contain two high ranking countries and one of the least happy countries in 2016: Denmark, Finland and Syria. Due to the way we assigned the happiness values and the fact that happiness levels are very similarly high in Denmark and Finland, but much lower in Syria, we should be able to detect the significant difference between the groups (countries).
+
+
+The dataset from which I took estimates can be found here: https://www.kaggle.com/unsdsn/world-happiness/data#2016.csv 
+
+
+```{r}
+######## Fabricating data #########
+set.seed(666)
+n = 1000 #number of people in each group
+
+#fabricating Denmark, Switzerland, Iceland - three hhappiest countries in 2016
+happy_allhigh <-  data_frame(happiness = c(rnorm(n, mean = 7.526, sd = 0.8),rnorm(n, 7.509, 0.8), rnorm(n, 7.501, 0.8)), 
+                        country = c(rep("Denmark", n),rep("Switzerland", n), rep("Iceland", n))
+                  )
+
+#fabrication Denmark, Syria and Finland - DK and Finland being similar and Syria being the least happy of the three
+happy_low <- data_frame(happiness = c(rnorm(n, mean = 7.526, sd = 0.8),rnorm(n, 3.069, 0.8), rnorm(n, 7.413, 0.8)), 
+                        country = c(rep("Denmark", n),rep("Syria", n), rep("Finland", n))
+                  )
+```
+
+
+
+When we have more than three groups we want to compare with each other, we perform ANalysis Of VAriance (ANOVA). 
+
+The null hypothesis for ANOVA is that the mean values from all groups are the same. The alternative hypothesis is that at least one of the groups is different.
+
+To run an ANOVA you can use function aov() and use the summary function to see the result. Let's see what the output looks like when we perform it on allhigh data, that does not contain that many differences between countries (i.e. Null hypothesis is true).
+
+```{r}
+#running anova and storing the output
+anova_model_nodiff <- aov(happiness ~ country, data = happy_allhigh)
+
+#looking at the output
+summary(anova_model_nodiff)
+```
+
+As you can see, the p-value is not significant - indicating that there is no difference between the mean values of happiness in the three highest ranking countries in the world happiness report 2016. We can stop caring about this data now, as there is nothing we can compare there.
+
+**“There was no significant effect of the country on happiness, F(2, 2997) = 0.667, p > .05.”** 
+  
+  You need to specify:
+    F(degrees of freedom for predictor, degrees of freedom for residuals) = F value
+    p value for the predictor.
+    
+
+Let's now see what it looks like for data with actual difference in happiness levels (the alternative hypothesis is true):
+
+```{r}
+#running anova and storing the output
+anova_model_diff <- aov(happiness ~ country, data = happy_low)
+
+#looking at the output
+summary(anova_model_diff)
+```
+
+You can see here the very small p-value, which indicates that there is a difference between countries, which is true to this fake data. 
+
+This output however, *does not* show:
+  1) whether all of the countries are different from each other, or whether it's just one country that is different from two others, 
+  2) the size or direction of the differencce
+
+You could potentially alredy report:
+  *“There was a significant effect of country on happiness, F(2, 2997) = 9498, p < 0.001”*
+  
+ But this could possibly leave people with more questions than answers, so it would be better to provide visualizations and numeric explanation of differences between the groups.
+
+#### Following up on significant results of ANOVA
+
+#### Numerically using linear regression
+
+One way to get more information on how groups are related to each other is to run anova as a linear regression! Which is the best way in my opinion!
+
+```{r}
+model_nodifference = lm(happiness ~ country, data = happy_allhigh)
+model_difference = lm(happiness ~ country, data = happy_low)
+
+summary(model_nodifference) #no small p-values 
+summary(model_difference) #small p-values
+```
+
+Since there is no difference between the groups detected in the first model, I will focus on the second model:
+
+Intercept is the base level of the predictor: in this case it's Denmark and estimate shows that the mean happiness score for Denmark is 7.510388
+
+Other estimates show how other levels of the predictor compare to the base level:
+  Finland's mean happiness score is 0.03733 lower than Denmark's (i.e. it's ca. 7.47), which is a significant decrease (p value < 0.05) 
+  Syria's mean happiness score is 4.42498 lower than Denmark's (i.e. it's ca 3.08), which is a very significant decrease (p value < 0.001)
+
+##### By visualizing the mean 
+We can also support our judgement of results of ANOVA visually by drawing the mean values (just a reminder of code for boxplot with the mean value point). This will also allow to communicate results of the study in a more intuitive way.
+
+*Draw a boxplot with the point for the mean for the second dataset based on example provided* 
+
+```{r}
+#Box plot
+ggplot(happy_allhigh, aes(x = country, y = happiness, colour = country)) +
+  geom_boxplot(width = 0.5) +
+  ggtitle("Happiness in happiest countries")+
+  stat_summary(fun.y = mean, geom = "point", shape = 23, colour = "Black")
+
+
+```
+
+
+
+##### Numerically using post-hoc pairwise comparisons
+
+Another way to get more information about relation between three and more menas, is to compare groups in pairs with 'stricter' versions of t-tests, i.e. make post-hoc pairwise comparisons. 
+
+Interpretation is similar to t-tests:
+    if there is no difference between the means, you see large p-values 
+    if difference between the means is present, you see small p-values 
+
+
+You can find information on different methods of p-value adjustment:
+https://www.r-bloggers.com/r-tutorial-series-anova-pairwise-comparison-methods/
+
+1) Benferroni correction:  conservative, controls the family wise error 
+
+ "The Bonferroni adjustment simply divides the Type I error rate (.05) by the number of tests (in this case, three). Hence, this method is often considered overly conservative. The Bonferroni adjustment can be made using p.adj = “bonferroni” in the pairwise.t.test() function."
+
+
+```{r}
+#no difference -> all p-values are very large
+pairwise.t.test(happy_allhigh$happiness, happy_allhigh$country, p.adjust.method = "bonferroni")
+
+#difference is present -> small p-values
+pairwise.t.test(happy_low$happiness, happy_low$country, p.adjust.method = "bonferroni")
+
+```
+
+
+2) Tukey’s HSD correction: less conservative, better compromise between Type 1 and Type 2 error
+  
+  "The Tukey Honest Significant Difference (HSD) method controls for the Type I error rate across multiple comparisons and is generally considered an acceptable technique. This method can be executed using the multcomp::glht(Model1, linfct = multcomp::mcp(predictor = “Tukey”))."
+  
+```{r}
+#we need to make sure predictor is a factor
+happy_allhigh$country <- as.factor(happy_allhigh$country)
+happy_low$country <- as.factor(happy_low$country)
+
+#we also need multcomp library
+pacman::p_load(multcomp)
+
+#no difference -> all p-values are very large
+summary(glht(aov(happiness ~ country, data = happy_allhigh), linfct = mcp(country = "Tukey")))
+
+##difference is present -> small p-values
+summary(glht(aov(happiness ~ country, data = happy_low), linfct = mcp(country = "Tukey")))
+```
+
+As you can see, all of pairwise comparisons on the non-difference dataset have supported results of ANOVA which did not detect any difference between the happiest countries. Therefore, it is usually unnecessary and quite pointless to run any pairwise comparisons once ANOVA results are not significant. 
+
+However, p-values resulting from the pairwise comparisons on the second dataset have shown that Syria was different from the other two countries to a bigger extent, than Finland and Denmark differed from each other, which was exactly the case.
+
+Once you've got significant ANOVA results and have performed post-hoc pairwise comparisons, you can report the results:
+
+```{r}
+#summary is too far, so I display it here again
+summary(anova_model_diff)
+```
+
+
+  **“There was a significant effect of the country on happiness of the population F(2, 2997) = 9498, p < .001. The Tukey’s HSD correction post hoc tests revealed that the happiness of population was significantly lower in Syria than in both Denmark and Finland (both p < 0.001). The happiness levels in Denmark and Finland were also found to be significantly different but to a lesser extent than compared to each country's comparison to Syria (p < 0.05)** 
+
+
+
+#### Checking assumptions 
+
+1. Homogeneity of variance 
+
+The assumption of homogeneity of variance is that the variance within each of the populations is equal. ANOVA works well even when this assumption is violated except in the case where there are unequal numbers of subjects in the various groups.
+
+Can be checked using barlett.test(outcome ~ predictor, data = mydata):
+  If p value < 0.5 - Significant result, therefore variances cannot be assumed to be equal (violated assumption)
+
+  If p value > 0.5 - Non-significant result, therefore variances can be assumed to be equal (assumption is not violated)
+
+```{r}
+bartlett.test(happiness ~ country, data=happy_low)
+```
+
+In this case, the result is non-significant (p-value > 0.05), meaning variances can be assumed to be equal.
+
+2. Checking residuals
+
+plot(model): check everything at once
+plot(model, 1): check linearity
+plot(model, 2): check normality
+plot(model, 3): check homoschedasticity
+plot(model, 4): check influential cases
+
+
+```{r}
+#Checking assumptions of anova on perfect data (cause it's fabricated suing normal distributions)
+plot(anova_model_diff)
+```
+
+Now that you know what these plots should ideally look like, you will be able to spot deviations of real residuals from the perfect residuals. If in the future you will spot that something does not look right, you should try to transform it!
+
+
+### Part 2 Exercises
+
+1. Import the sex & death dataset
+
+
+2. Conduct an ANOVA analysis investigating if there is differences in mean longevity among fruit flies over the 5 conditions, flyes who were together with:
+  - With no female
+  - With one pregnant female
+  - With eight pregnant females
+  - With one female virgin
+  - With eight female virgins 
+
+
+3. Explore the result using a post-hoc pairwise comparisons using bonfferoni adjustment first and then Tukey's HSD correction. Do they give very different results?
+
+
+4. (Extra): 
+ - What assumptions should you check for? Are these met?
+ - You can you the function plot() on your linear model, this returns a variety of plots. Are these useful and why?
+ - Write a short conclusion of the results of your analysis
+ 
+ 
+
+### Part 3 Optional:
+
+1) In the way that I simulated the world happiness data, create a dataframe that has:
+    - 100 observations
+    - columns with height, left leg length, right leg length. 
+          Use rnorm() and some abritrary values for the mean and sd
+          make sure that you use the same mean and sd for generating left leg and right leg values.
+          The values will be drawn randomly, but from the same distribution
+          -> guaranteeing that left leg and right leg will be highly correlated. 
+          
+      - then also add a column with a constant number in it 
+          (e.g. it would have value 25 for every observation) 
+          use rep(the value to be repeated for all observations) command
+
+2) Make several models for predicting height: 
+  - one purposufully bad model that uses the variable with a constant number in it as a predictor 
+  - one that uses just one leg variable as a predictor
+  - one that uses both leg variables (highly correlated) as predictors
+  
+3) Run model comparison commands on the models: anova(), AIC(), BIC()
+
+4) Which model is the best and does having the second leg variable as an additionla predictor improve the fit?
+
+ 
+
